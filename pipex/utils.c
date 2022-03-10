@@ -1,3 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wdwain <wdwain@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/10 18:24:31 by wdwain            #+#    #+#             */
+/*   Updated: 2022/03/10 13:56:30 by wdwain           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "pipex.h"
+
 char *path_parcing(char *command, char **envp)
 {
 	char **mypaths;
@@ -27,7 +41,7 @@ void ft_execve(char *ag, char **envp)
 	char **command;
 	char *path;
 
-	command = ft_split(argv, ' ');
+	command = ft_split(ag, ' ');
 	path = path_parsing(command[0], envp);
 	if (execve(path, command, envp) == -1)
 	{

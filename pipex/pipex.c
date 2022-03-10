@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h> //for write, fd, close
-#include <stdlib.h> //for malloc
+#include "pipex.h"
 
 void child_one(int f1, char *cmd1, int end, char **envp)
 {
@@ -58,12 +57,12 @@ void ft_pipex(int f1, int f2, char *cmd1, char *cmd2, char **envp)
 		perror("fork error");
 		exit(EXIT_FAILURE);
 	}
-	if (child2 == 0)
+	if (!child2)
 		child_two(f2, cmd2, end, envp);
-	close(end[0]);				 // this is the parent
-	close(end[1]);				 // doing nothing
-	waitpid(child1, &status, 0); // supervising the children
-	waitpid(child2, &status, 0); // while they finish their tasks
+	close(end[0]);				 
+	close(end[1]);				 
+	waitpid(child1, &status, 0); 
+	waitpid(child2, &status, 0); 
 }
 
 int main(int ac, char *ag[], char **envp)
@@ -82,7 +81,7 @@ int main(int ac, char *ag[], char **envp)
 		exit(EXIT_FAILURE);
 	}
 	f1 = open(ag[1], O_RDONLY);
-	f2 = open(ag[4], O_CREAT | O_RDWR | O_TRUNC, 0644);
+	f2 = open(ag[4], O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (f1 < 0 || f2 < 0)
 	{
 		perror("file error");
