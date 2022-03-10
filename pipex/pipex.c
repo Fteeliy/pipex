@@ -12,81 +12,63 @@
 
 #include "pipex.h"
 
-void child_one(int f1, char *cmd1, int end, char **envp)
+void	child_one(char **ag, int *end, char **envp)
 {
-	dup2(f1, STDIN_FILENO);
-	dup2(end[1], STDOUT_FILENO);
+	int		f1;
+
+	f1 = open(ag[1], O_RDONLY, 0777);
+	if (f1 == -1)
+		ft_error();
+	if (dup2(f1, STDIN_FILENO) < 0)
+		ft_error();
+	if (dup2(end[1], STDOUT_FILENO) < 0)
+		ft_error();
 	close(end[0]);
-	ft_execve(cmd1, envp);
-	exit(EXIT_FAILURE);
+	ft_execve(ag[2], envp);
+	ft_error();
 }
 
-void child_two(int f2, char *cmd2, int end, char **envp)
+void	child_two(char **ag, int *end, char **envp)
 {
-	dup2(f2, STDIN_FILENO);
-	dup2(end[0], STDOUT_FILENO);
-	close(end[1]);
-	ft_execve(cmd2, envp);
-	exit(EXIT_FAILURE);
-}
+	int		f2;
 
-void ft_pipex(int f1, int f2, char *cmd1, char *cmd2, char **envp)
-{
-	int status;
-	int end[2];
-
-	pid_t child1;
-	pid_t child2;
-
-	if (pipe(end) == -1)
-	{
-		perror("pipe error");
-		exit(EXIT_FAILURE);
-	};
-	child1 = fork();
-	if (child1 < 0)
-	{
-		perror("fork error");
-		exit(EXIT_FAILURE);
-	}
-	if (!child1)
-		child_one(f1, cmd1, end, envp);
-	child2 = fork();
-	if (child2 < 0)
-	{
-		perror("fork error");
-		exit(EXIT_FAILURE);
-	}
-	if (!child2)
-		child_two(f2, cmd2, end, envp);
-	close(end[0]);				 
-	close(end[1]);				 
-	waitpid(child1, &status, 0); 
-	waitpid(child2, &status, 0); 
-}
-
-int main(int ac, char *ag[], char **envp)
-{
-	int f1;
-	int f2;
-	char *cmd1;
-	char *cmd2;
-
-	cmd1 = ag[2];
-	cmd2 = ag[3];
-
-	if (ac != 5)
-	{
-		perror("Error");
-		exit(EXIT_FAILURE);
-	}
-	f1 = open(ag[1], O_RDONLY);
 	f2 = open(ag[4], O_CREAT | O_RDWR | O_TRUNC, 0777);
-	if (f1 < 0 || f2 < 0)
+	if (f2 == -1)
+		ft_error();
+	if (dup2(end[0], STDIN_FILENO) < 0)
+		ft_error();
+	if (dup2(f2, STDOUT_FILENO) < 0)
+		ft_error();
+	close(end[1]);
+	ft_execve(ag[3], envp);
+	ft_error();
+}
+
+int	main(int ac, char **ag, char **envp)
+{
+	int		end[2];
+	pid_t	child1;
+	pid_t	child2;
+
+	if (ac == 5)
 	{
-		perror("file error");
-		exit(EXIT_FAILURE);
+		if (pipe(end) == -1)
+			ft_error();
+		child1 = fork();
+		if (child1 == -1)
+			ft_error();
+		if (!child1)
+			child_one(ag, end, envp);
+		child2 = fork();
+		if (child2 == -1)
+			ft_error();
+		if (!child2)
+			child_two(ag, end, envp);
+		close(end[0]);
+		close(end[1]);
+		waitpid(child1, NULL, 0);
+		waitpid(child2, NULL, 0);
 	}
-	ft_pipex(f1, f2, cmd1, cmd2, envp);
-	return (0);
+	else
+		ft_error();
 }
