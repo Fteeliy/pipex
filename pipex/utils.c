@@ -6,7 +6,7 @@
 /*   By: wdwain <wdwain@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/26 14:52:40 by wdwain            #+#    #+#             */
-/*   Updated: 2022/03/10 18:43:20 by wdwain           ###   ########.fr       */
+/*   Updated: 2022/03/10 19:12:59 by wdwain           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,13 @@ void	ft_execve(char *ag, char **envp)
 
 	command = ft_split(ag, ' ');
 	path = path_parcing(command[0], envp);
+	if (!path)
+	{
+		write(STDERR_FILENO, "command not found: ", 19);
+		write(STDERR_FILENO, command[0], ft_strlen(command[0]));
+		write(STDERR_FILENO, "\n", 1);
+		exit(EXIT_FAILURE);
+	}
 	if (execve(path, command, envp) == -1)
 		ft_error();
 }

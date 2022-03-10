@@ -6,7 +6,7 @@
 #    By: wdwain <wdwain@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/26 14:52:40 by wdwain            #+#    #+#              #
-#    Updated: 2022/03/10 18:38:03 by wdwain           ###   ########.fr        #
+#    Updated: 2022/03/10 19:52:16 by wdwain           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = pipex
 
 CC = cc
 CFLAGS = -Wall -Werror -Wextra
-RM = rm -rf
+RM = rm -f
 
 HEADER = pipex.h
 SRC = pipex.c \
